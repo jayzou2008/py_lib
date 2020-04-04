@@ -1,30 +1,42 @@
+####   Usage Example   #########
+"""
+sendmail = SendEmail(
+    'email address',
+    'password',
+)
+sendmail.send_email(
+    'dest email address',
+    'subject',
+    'body')
+"""
+
 import smtplib
+from email.mime.text import MIMEText
 
-def send_email():
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.ehlo()
-    server.starttls()
-    server.ehlo()
-    user_account = 'jayzou2008@gmail.com'
-    password = ' '
+class SendEmail:
+    def __init__(self, user, password):
+        self.user_account = user
+        self.password = password
 
-    server.login(user_account, password)
+    def send_email(self, dest, subject, body):
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.ehlo()
+        server.starttls()
+        server.ehlo()
 
-    subject = 'Price'
-    body = 'check the link'
 
-    #msg = f"Subject: {subject}\n\n{body}"
-    msg = "Subject: %s\n\n%s" % (subject, body)
-    #msg = "check"
+        server.login(self.user_account, self.password)
 
-    server.sendmail(
-        'jayzou2008@gmail.com',
-        'jay-zou2008@hotmail.com',
-        msg
-    )
-    print('Email has been sent')
 
-    server.quit()
+        mesg = MIMEText(body)
+        mesg['Subject'] = subject
 
-if (1):
-    send_email()
+        server.sendmail(
+            'jayzou2008@gmail.com',
+            dest,
+            mesg.as_string()
+        )
+        print('Email has been sent')
+
+        server.quit()
+
